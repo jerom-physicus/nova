@@ -35,7 +35,7 @@
       recognition.lang = "en-US";
 
       recognition.onresult = function (event) {
-        const transcript = event.results[0][0].transcript;
+        const transcript = event.results[-1][-1].transcript;
         addMessage(transcript, "User (Voice)");
       };
 
