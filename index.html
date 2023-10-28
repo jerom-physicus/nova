@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Speech to Text</title>
+  </head>
+  <body>
+    <h1>Speech to Text</h1>
+    <button id="startButton">Start Listening</button>
+    <div id="output"></div>
+
+    <script>
+      const startButton = document.getElementById("startButton");
+      const outputDiv = document.getElementById("output");
+      let recognition;
+
+      function initializeRecognition() {
+        recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = function () {
+          startButton.disabled = true;
+          startButton.textContent = "Listening...";
+        };
+
+        recognition.onend = function () {
+          startButton.disabled = false;
+          startButton.textContent = "Start Listening";
+        };
+
+        recognition.onerror = function (event) {
+          outputDiv.textContent = "Error: " + event.error;
+          console.error("Speech recognition error:", event.error);
+          recognition.stop();
+        };
+
+        recognition.onresult = function (event) {
+          let transcript = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              transcript += event.results[i][0].transcript;
+            } else {
+              transcript += event.results[i][0].transcript;
+            }
+          }
+          outputDiv.textContent = transcript;
+        };
+      }
+
+      startButton.addEventListener("click", function () {
+        if (recognition && recognition.continuous) {
+          recognition.stop();
+        } else {
+          if (!recognition) {
+            initializeRecognition();
+          }
+          recognition.start();
+        }
+      });
+    </script>
+  </body>
+</html>
