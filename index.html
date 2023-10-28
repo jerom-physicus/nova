@@ -38,7 +38,7 @@
 
       recognition.onresult = function (event) {
         const transcript = event.results[0][0].transcript;
-        addMessage(transcript, "User (Voice)");
+        addMessage(transcript[-1], "User (Voice)");
         // Add your code to process the voice input and generate a chat bot response here.
         // You can use speech recognition and text-to-speech libraries or APIs for this purpose.
       };
