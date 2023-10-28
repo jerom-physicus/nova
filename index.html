@@ -1,63 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Speech to Text</title>
+    <title>Speech Chat Bot</title>
   </head>
   <body>
-    <h1>Speech to Text</h1>
-    <button id="startButton">Start Listening</button>
-    <div id="output"></div>
+    <h1>Welcome to the Speech Chat Bot</h1>
+
+    <div id="chatbox">
+      <div id="chat"></div>
+      <input type="text" id="userInput" placeholder="Speak or type here" />
+      <button onclick="sendMessage()">Send</button>
+      <button onclick="recognition.start()">Speak</button>
+    </div>
 
     <script>
-      const startButton = document.getElementById("startButton");
-      const outputDiv = document.getElementById("output");
-      let recognition;
-
-      function initializeRecognition() {
-        recognition = new (window.SpeechRecognition ||
-          window.webkitSpeechRecognition)();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-
-        recognition.onstart = function () {
-          startButton.disabled = true;
-          startButton.textContent = "Listening...";
-        };
-
-        recognition.onend = function () {
-          startButton.disabled = false;
-          startButton.textContent = "Start Listening";
-        };
-
-        recognition.onerror = function (event) {
-          outputDiv.textContent = "Error: " + event.error;
-          console.error("Speech recognition error:", event.error);
-          recognition.stop();
-        };
-
-        recognition.onresult = function (event) {
-          let transcript = "";
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (event.results[i].isFinal) {
-              transcript += event.results[i][0].transcript;
-            } else {
-              transcript += event.results[i][0].transcript;
-            }
-          }
-          outputDiv.textContent = transcript;
-        };
+      // Function to add a message to the chat box
+      function addMessage(message, sender) {
+        const chat = document.getElementById("chat");
+        const newMessage = document.createElement("p");
+        newMessage.textContent = `${sender}: ${message}`;
+        chat.appendChild(newMessage);
       }
 
-      startButton.addEventListener("click", function () {
-        if (recognition && recognition.continuous) {
-          recognition.stop();
-        } else {
-          if (!recognition) {
-            initializeRecognition();
-          }
-          recognition.start();
-        }
-      });
+      // Function to handle user messages
+      function sendMessage() {
+        const userInput = document.getElementById("userInput").value;
+        addMessage(userInput, "User");
+        // Add your code to process the user's input and generate a chat bot response here.
+        // You can use speech recognition and text-to-speech libraries or APIs for this purpose.
+      }
+
+      // Initialize speech recognition
+      const recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        addMessage(transcript, "User (Voice)");
+        // Add your code to process the voice input and generate a chat bot response here.
+        // You can use speech recognition and text-to-speech libraries or APIs for this purpose.
+      };
+
+      // Start speech recognition when the page loads
+      recognition.start();
     </script>
   </body>
 </html>
